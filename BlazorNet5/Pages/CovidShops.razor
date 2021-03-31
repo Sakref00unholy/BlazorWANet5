@@ -1,0 +1,60 @@
+﻿@page "/CovidShop"
+@inject HttpClient http
+
+<h3>CovidShops</h3>
+@if (shops == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Antal</th>
+            <th>Max</th>
+            <th>Shops</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var shop in shops)
+        {
+            <tr>
+                <td>@shop.Id</td>
+                <td>@shop.Antal</td>
+                <td>@shop.AntalMax</td>
+                <td>@shop.ButiksNavn</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+@code {
+    private CovidShop[] shops;
+
+    protected override async Task OnInitializedAsync()
+    {
+        shops = await http.GetFromJsonAsync<CovidShop[]>("https://localhost:44346/CovidShop/");
+    }
+    public class CovidShop
+    {
+        public int Id { get; set; }
+        public int Antal { get; set; }
+        public int AntalMax { get; set; }
+        public string ButiksNavn { get; set; }
+
+        public CovidShop(int id, int antal, int antalMax, string butiksNavn)
+        {
+            Id = id;
+            Antal = antal;
+            AntalMax = antalMax;
+            ButiksNavn = butiksNavn;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Antal)}: {Antal}, {nameof(AntalMax)}: {AntalMax}, {nameof(ButiksNavn)}: {ButiksNavn}";
+        }
+    }
+}
